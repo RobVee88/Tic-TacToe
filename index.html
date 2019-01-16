@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="CSS/reset.css"></style>
+    <link rel="stylesheet" href="CSS/style.css"></style>
+</head>
+<body>
+    <header>
+            <h1>Tic-Tac-Toe</h1>
+    </header>
+    <main>
+        <div class="overlay">
+            <divc class="new-game-menu">
+                <div class="player-one-menu">
+                    <h2>PLAYER ONE</h2>
+                    <form>
+                        <p>Player Name:</p>
+                        <input type="text" class="player-one-name-input">
+                        <p>Human/CPU:</p>
+                        <select class="player-one-human-cpu">
+                            <option>Human</option>
+                            <option>CPU</option>
+                        </select>
+                        <p>Race:</p>
+                        <select class="player-one-race">
+                            <option>Terran</option>
+                            <option>Protoss</option>
+                            <option>Zerg</option>
+                        </select>  
+                        <img class="player-one-avatar-image" src="IMG/Terran.jpg">
+                    </form>
+                </div>
+                <div class="player-two-menu">
+                        <h2>PLAYER TWO</h2>
+                        <form>
+                            <p>Player Name:</p>
+                            <input type="text" class="player-two-name-input">
+                            <p>Human/CPU:</p>
+                            <select class="player-two-human-cpu">
+                                <option>Human</option>
+                                <option>CPU</option>
+                            </select>
+                            <p>Race:</p>
+                            <select class="player-two-race">
+                                <option>Terran</option>
+                                <option>Protoss</option>
+                                <option>Zerg</option>
+                            </select>  
+                            <img class="player-two-avatar-image" src="IMG/Terran.jpg">
+                        </form>
+                </div>
+                <div class="ok-button-div">
+                    <button class="btn-start-game">START GAME!</button>
+                </div>
+            </div>
+        </div>
+        <div class="side-bar">
+            <button class="btn-new-game">START NEW GAME</button>
+            <div class="player-one-display">
+                <p class="player-one-name">PLAYER 1 SCORE:</p>
+                <p class="player-one-score">0</p>
+                <img class="player-one-display-image" src="IMG/Starcraft-Logo.jpg">
+            </div>
+            <div class="player-two-display">
+                <p class="player-two-name">PLAYER 2 SCORE:</p>
+                <p class="player-two-score">0</p>
+                <img class="player-two-display-image" src="IMG/Starcraft-Logo.jpg">
+            </div>
+        </div>
+        <div class="game-board">
+        </div>
+    </main>
+    <footer>
+        <h1 class="no-winner"><span class="txt-winner"></span> WINS!!</h1>
+    </footer>
+    <script src="JS/tic.js"></script>
+</body>
+</html>
