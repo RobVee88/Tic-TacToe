@@ -52,6 +52,20 @@ header, footer {
     border-radius: 100%;
 }
 
+.side-bar-overlay {
+    z-index: 2;
+    position: fixed;
+    width: 20%;
+    opacity: 0.8;
+}
+
+.game-description {
+    border-style: ridge;
+    font-size: 18px;
+    background-color: black;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
 .overlay {
     z-index: 2;
     height: 680px;

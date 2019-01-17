@@ -430,6 +430,7 @@ var createGameBoard = function () {
 //start a new game
 var newGame = function () {
     cpuTimer = clearInterval(cpuTimer);
+    divSideBarOverlay.style.visibility = 'hidden';
     overylayMenu.style.visibility = 'visible';
 }
 
@@ -463,6 +464,8 @@ var startGame = function () {
         imgPlayerTwoDisplay.src = playerTwo.displayImage;
         overylayMenu.style.visibility = 'hidden';
         divGameBoard.style.backgroundImage = 'none';
+        divPlayerOneDisplay.style.visibility = 'visible';
+        divPlayerTwoDisplay.style.visibility = 'visible';
         resetBoard();
     } else {
         txtErrorMessage.textContent = "Please enter a name for both players!";
@@ -526,6 +529,10 @@ var imgPlayerTwoAvaterImage = document.querySelector('.player-two-avatar-image')
 var divPlayerOneDisplay = document.querySelector('.player-one-display');
 var divPlayerTwoDisplay = document.querySelector('.player-two-display');
 var txtErrorMessage = document.querySelector('.error-message');
+var divSideBarOverlay = document.querySelector('.side-bar-overlay');
+
+divPlayerOneDisplay.style.visibility = 'hidden';
+divPlayerTwoDisplay.style.visibility = 'hidden';
 
 //add eventlisteners
 btnNewGame.addEventListener('click', newGame);
