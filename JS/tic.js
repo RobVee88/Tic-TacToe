@@ -5,14 +5,14 @@ var clickGameSquare = function(event) {
         !event.target.classList.contains('player-two')) {
             if(activePlayer === 'player-one') {
                 event.target.classList.add('player-one');
-                changeImage(playerOne, event.target);
+                changeImage(playerOne, playerTwo, event.target);
                 checkForWin();
                 activePlayer = 'player-two';
                 divPlayerOneDisplay.classList.remove('current-player');
                 divPlayerTwoDisplay.classList.add('current-player');
             } else {
                 event.target.classList.add('player-two');
-                changeImage(playerTwo, event.target);
+                changeImage(playerTwo, playerOne, event.target);
                 checkForWin();
                 activePlayer = 'player-one';
                 divPlayerTwoDisplay.classList.remove('current-player');
@@ -21,10 +21,19 @@ var clickGameSquare = function(event) {
         }
     }
 }
-var changeImage = function (player, gameSquare) {
+var changeImage = function (currentPlayer, otherPlayer, gameSquare) {
     var randomizer = Math.random();
 
-    if(player.race === 'Terran') {
+    if((currentPlayer.race === 'Terran') && (otherPlayer.race === 'Terran') && (currentPlayer.player === 'player-two')) {
+        gameSquare.style.backgroundImage = "url('IMG/SiegeTank.jpg')";
+        if(randomizer <= 0.333) {  
+            siegetank1.play();
+        } else if (randomizer > 0.333 && randomizer <= 0.666) {
+            siegetank2.play();
+        }else if (randomizer > 0.666) {
+            siegetank3.play();
+        }
+    } else if(currentPlayer.race === 'Terran') {
         gameSquare.style.backgroundImage = "url('IMG/Marine.jpg')";
         if(randomizer <= 0.333) {  
             marineAudio.play();
@@ -34,7 +43,16 @@ var changeImage = function (player, gameSquare) {
             marineAudio3.play();
         }
     }
-    if(player.race === 'Protoss') {
+    if((currentPlayer.race === 'Protoss') && (otherPlayer.race === 'Protoss') && (currentPlayer.player === 'player-two')) {
+        gameSquare.style.backgroundImage = "url('IMG/Dragoon.png')";
+        if(randomizer <= 0.333) {  
+            dragoon1.play();
+        } else if (randomizer > 0.333 && randomizer <= 0.666) {
+            dragoon2.play();
+        }else if (randomizer > 0.666) {
+            dragoon3.play();
+        } 
+    } else if(currentPlayer.race === 'Protoss') {
         gameSquare.style.backgroundImage = "url('IMG/Zealot.jpg')";  
         if(randomizer <= 0.333) {
             zealotAudio.play();
@@ -44,7 +62,16 @@ var changeImage = function (player, gameSquare) {
             zealotAudio3.play();
         }    
     }
-    if(player.race === 'Zerg') {
+    if((currentPlayer.race === 'Zerg') && (otherPlayer.race === 'Zerg') && (currentPlayer.player === 'player-two')) {
+        gameSquare.style.backgroundImage = "url('IMG/Zergling.jpg')";
+        if(randomizer <= 0.333) {  
+            zergling1.play();
+        } else if (randomizer > 0.333 && randomizer <= 0.666) {
+            zergling2.play();
+        }else if (randomizer > 0.666) {
+            zergling3.play();
+        } 
+    } else if(currentPlayer.race === 'Zerg') {
         gameSquare.style.backgroundImage = "url('IMG/Hydralisk.jpg')";
         if(randomizer <= 0.333) {  
             hydraliskAudio.play();
@@ -55,26 +82,145 @@ var changeImage = function (player, gameSquare) {
         }    
     }
 }
+
 var cpuMove = function() {
     if(!playerOne.isHuman || !playerTwo.isHuman) {
+        //find all empty gamesquares
         var arrEmptySquares = [];
+        var p1AlmostWinningSquareLine1 = checkAlmostWinningLine('player-one', 'player-two',0,1,2);
+        var p2AlmostWinningSquareLine1 = checkAlmostWinningLine('player-two', 'player-one',0,1,2);
+        var p1AlmostWinningSquareLine2 = checkAlmostWinningLine('player-one', 'player-two',3,4,5);
+        var p2AlmostWinningSquareLine2 = checkAlmostWinningLine('player-two', 'player-one',3,4,5);
+        var p1AlmostWinningSquareLine3 = checkAlmostWinningLine('player-one', 'player-two',6,7,8);
+        var p2AlmostWinningSquareLine3 = checkAlmostWinningLine('player-two', 'player-one',6,7,8);
+        var p1AlmostWinningSquareLine4 = checkAlmostWinningLine('player-one', 'player-two',0,3,6);
+        var p2AlmostWinningSquareLine4 = checkAlmostWinningLine('player-two', 'player-one',0,3,6);
+        var p1AlmostWinningSquareLine5 = checkAlmostWinningLine('player-one', 'player-two',1,4,7);
+        var p2AlmostWinningSquareLine5 = checkAlmostWinningLine('player-two', 'player-one',1,4,7);
+        var p1AlmostWinningSquareLine6 = checkAlmostWinningLine('player-one', 'player-two',2,5,8);
+        var p2AlmostWinningSquareLine6 = checkAlmostWinningLine('player-two', 'player-one',2,5,8);
+        var p1AlmostWinningSquareLine7 = checkAlmostWinningLine('player-one', 'player-two',0,4,8);
+        var p2AlmostWinningSquareLine7 = checkAlmostWinningLine('player-two', 'player-one',0,4,8);
+        var p1AlmostWinningSquareLine8 = checkAlmostWinningLine('player-one', 'player-two',2,4,6);
+        var p2AlmostWinningSquareLine8 = checkAlmostWinningLine('player-two', 'player-one',2,4,6);
+
         for(i = 0; i < arrGameSquares.length; i++) {
             if(!(arrGameSquares[i].classList.contains('player-one') || arrGameSquares[i].classList.contains('player-two'))) {
                 arrEmptySquares.push(arrGameSquares[i]);
             }
         }
-        if(!playerOne.isHuman && activePlayer === 'player-one') {
-            var randomizer = Math.floor(Math.random() * arrEmptySquares.length);
-            arrEmptySquares[randomizer].classList.add(activePlayer);
-            changeImage(playerOne, arrEmptySquares[randomizer]);
+        if((!playerOne.isHuman) && (activePlayer === 'player-one')) {
+            if(p1AlmostWinningSquareLine1 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine1].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine1]);   
+            } else if (p1AlmostWinningSquareLine2 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine2].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine2]);
+            } else if (p1AlmostWinningSquareLine3 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine3].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine3]);
+            }else if (p1AlmostWinningSquareLine4 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine4].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine4]);
+            }else if (p1AlmostWinningSquareLine5 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine5].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine5]);
+            }else if (p1AlmostWinningSquareLine6 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine6].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine6]);
+            }else if (p1AlmostWinningSquareLine7 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine7].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine7]);
+            }else if (p1AlmostWinningSquareLine8 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine8].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p1AlmostWinningSquareLine8])
+            } else if(p2AlmostWinningSquareLine1 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine1].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine1]); 
+            } else if (p2AlmostWinningSquareLine2 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine2].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine2]);
+            } else if (p2AlmostWinningSquareLine3 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine3].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine3]);
+            }else if (p2AlmostWinningSquareLine4 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine4].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine4]);
+            }else if (p2AlmostWinningSquareLine5 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine5].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine5]);
+            }else if (p2AlmostWinningSquareLine6 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine6].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine6]);
+            }else if (p2AlmostWinningSquareLine7 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine7].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine7]);
+            }else if (p2AlmostWinningSquareLine8 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine8].classList.add('player-one');
+                changeImage(playerOne, playerTwo, arrGameSquares[p2AlmostWinningSquareLine8]);
+            } else {
+                var randomizer = Math.floor(Math.random() * arrEmptySquares.length);
+                arrEmptySquares[randomizer].classList.add(activePlayer);
+                changeImage(playerOne, playerTwo, arrEmptySquares[randomizer]);
+            }   
             checkForWin();
             activePlayer = 'player-two';
             divPlayerOneDisplay.classList.remove('current-player');
             divPlayerTwoDisplay.classList.add('current-player');
-        } else if(!playerTwo.isHuman && activePlayer === 'player-two') {
-            var randomizer = Math.floor(Math.random() * arrEmptySquares.length);
-            arrEmptySquares[randomizer].classList.add(activePlayer);
-            changeImage(playerTwo, arrEmptySquares[randomizer]);            
+        } else if((!playerTwo.isHuman) && (activePlayer === 'player-two')) {  
+            if(p2AlmostWinningSquareLine1 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine1].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine1]);   
+            } else if (p2AlmostWinningSquareLine2 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine2].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine2]);
+            } else if (p2AlmostWinningSquareLine3 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine3].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine3]);
+            }else if (p2AlmostWinningSquareLine4 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine4].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine4]);
+            }else if (p2AlmostWinningSquareLine5 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine5].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine5]);
+            }else if (p2AlmostWinningSquareLine6 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine6].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine6]);
+            }else if (p2AlmostWinningSquareLine7 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine7].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine7]);
+            }else if (p2AlmostWinningSquareLine8 !== false) {
+                arrGameSquares[p2AlmostWinningSquareLine8].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p2AlmostWinningSquareLine8])
+            } else if(p1AlmostWinningSquareLine1 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine1].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine1]); 
+            } else if (p1AlmostWinningSquareLine2 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine2].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine2]);
+            } else if (p1AlmostWinningSquareLine3 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine3].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine3]);
+            }else if (p1AlmostWinningSquareLine4 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine4].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine4]);
+            }else if (p1AlmostWinningSquareLine5 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine5].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine5]);
+            }else if (p1AlmostWinningSquareLine6 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine6].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine6]);
+            }else if (p1AlmostWinningSquareLine7 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine7].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine7]);
+            }else if (p1AlmostWinningSquareLine8 !== false) {
+                arrGameSquares[p1AlmostWinningSquareLine8].classList.add('player-two');
+                changeImage(playerTwo, playerOne, arrGameSquares[p1AlmostWinningSquareLine8]);
+            } else {       
+                var randomizer = Math.floor(Math.random() * arrEmptySquares.length);
+                arrEmptySquares[randomizer].classList.add(activePlayer);
+                changeImage(playerTwo, playerOne, arrEmptySquares[randomizer]);  
+            } 
             checkForWin();
             activePlayer = 'player-one';
             divPlayerTwoDisplay.classList.remove('current-player');
@@ -82,7 +228,7 @@ var cpuMove = function() {
         }
     }
 }
-//check to see if a certain line is winning
+//check to see if a certain line is winning needs all three to be clicked
 var isWinningLine = function (gameSquareClass, gameSquare1, gameSquare2, gameSquare3) {
     //go through possible winning line
     if(gameSquare1.classList.contains(gameSquareClass) && gameSquare2.classList.contains(gameSquareClass) && gameSquare3.classList.contains(gameSquareClass)) {
@@ -92,6 +238,31 @@ var isWinningLine = function (gameSquareClass, gameSquare1, gameSquare2, gameSqu
     }
 
 }
+
+//returns index of arrGamesSquares for the chosen square
+var checkAlmostWinningLine = function (gameSquareClass1, gameSquareClass2, num1, num2, num3) {
+    debugger
+    if( arrGameSquares[num1].classList.contains(gameSquareClass1) && 
+         (arrGameSquares[num2].classList.contains(gameSquareClass1) || arrGameSquares[num3].classList.contains(gameSquareClass1)) 
+       || (arrGameSquares[num2].classList.contains(gameSquareClass1) && arrGameSquares[num3].classList.contains(gameSquareClass1))) {
+
+
+            if(!arrGameSquares[num1].classList.contains(gameSquareClass1) && !arrGameSquares[num1].classList.contains(gameSquareClass2)) {
+                return num1;
+            }
+            if(!arrGameSquares[num2].classList.contains(gameSquareClass1) && !arrGameSquares[num2].classList.contains(gameSquareClass2)) {
+                return num2;
+            }
+            if(!arrGameSquares[num3].classList.contains(gameSquareClass1) && !arrGameSquares[num3].classList.contains(gameSquareClass2)) {
+                return num3;
+            } else {
+                return false;
+            }
+    } else {
+        return false;
+    }
+}
+
 
 //reset gameboard
 var resetBoard = function() {
@@ -252,6 +423,7 @@ var createGameBoard = function () {
     arrGameSquares.forEach(function(gameSquare) {
         gameSquare.addEventListener('click', clickGameSquare);
     });
+    cpuTimer = clearInterval(cpuTimer);
     cpuTimer = setInterval(cpuMove, 2000);
 }
 
@@ -262,37 +434,41 @@ var newGame = function () {
 }
 
 var startGame = function () {
-    playerOne.name = txtPlayerOneName.value;
-    if(selectPlayerOneIsHuman.value === "Human") {
-        playerOne.isHuman = true;
-    } else {
-        playerOne.isHuman = false;
-    }
-    playerOne.race = selectPlayerOneRace.value;
-    playerOne.displayImage = 'IMG/' + playerOne.race + '.jpg';
+    if(!(txtPlayerOneName.value === '') && !(txtPlayerTwoName.value === '')) {
+        playerOne.name = txtPlayerOneName.value;
+        if(selectPlayerOneIsHuman.value === "Human") {
+            playerOne.isHuman = true;
+        } else {
+            playerOne.isHuman = false;
+        }
+        playerOne.race = selectPlayerOneRace.value;
+        playerOne.displayImage = 'IMG/' + playerOne.race + '.jpg';
 
-    playerTwo.name = txtPlayerTwoName.value;
-    if(selectPlayerTwoIsHuman.value === "Human") {
-        playerTwo.isHuman = true;
-    } else {
-        playerTwo.isHuman = false;
-    }
-    playerTwo.race = selectPlayerTwoRace.value;
-    playerTwo.displayImage = 'IMG/' + playerTwo.race + '.jpg';
-    playerOne.score = 0;
-    playerTwo.score = 0;
-    txtPlayerOneScore.textContent = playerOne.score;
-    txtPlayerTwoScore.textContent = playerTwo.score;
+        playerTwo.name = txtPlayerTwoName.value;
+        if(selectPlayerTwoIsHuman.value === "Human") {
+            playerTwo.isHuman = true;
+        } else {
+            playerTwo.isHuman = false;
+        }
+        playerTwo.race = selectPlayerTwoRace.value;
+        playerTwo.displayImage = 'IMG/' + playerTwo.race + '.jpg';
+        playerOne.score = 0;
+        playerTwo.score = 0;
+        txtPlayerOneScore.textContent = playerOne.score;
+        txtPlayerTwoScore.textContent = playerTwo.score;
 
-    txtPlayerOneDisplayName.textContent = playerOne.name;
-    txtPlayerTwoDisplayName.textContent = playerTwo.name;
-    imgPlayerOneDisplay.src = playerOne.displayImage;
-    imgPlayerTwoDisplay.src = playerTwo.displayImage;
-    overylayMenu.style.visibility = 'hidden';
-    resetBoard();
+        txtPlayerOneDisplayName.textContent = playerOne.name;
+        txtPlayerTwoDisplayName.textContent = playerTwo.name;
+        imgPlayerOneDisplay.src = playerOne.displayImage;
+        imgPlayerTwoDisplay.src = playerTwo.displayImage;
+        overylayMenu.style.visibility = 'hidden';
+        divGameBoard.style.backgroundImage = 'none';
+        resetBoard();
+    } else {
+        txtErrorMessage.textContent = "Please enter a name for both players!";
+    }
 }
 var changeAvatar = function(event) {
-    debugger
     if(event.target.className = "player-one-race") {
         imgPlayerOneAvaterImage.src = 'IMG/' + selectPlayerOneRace.value + '.jpg';
     }
@@ -349,6 +525,7 @@ var imgPlayerOneAvaterImage = document.querySelector('.player-one-avatar-image')
 var imgPlayerTwoAvaterImage = document.querySelector('.player-two-avatar-image');
 var divPlayerOneDisplay = document.querySelector('.player-one-display');
 var divPlayerTwoDisplay = document.querySelector('.player-two-display');
+var txtErrorMessage = document.querySelector('.error-message');
 
 //add eventlisteners
 btnNewGame.addEventListener('click', newGame);
@@ -362,13 +539,25 @@ var hydraliskAudio = new Audio('Audio/hydraliskAudio.wav');
 var hydraliskAudio2 = new Audio('Audio/hydralisk2.wav');
 var hydraliskAudio3 = new Audio('Audio/hydralisk3.wav');
 
+var zergling1 = new Audio('Audio/zergling1.wav');
+var zergling2 = new Audio('Audio/zergling2.wav');
+var zergling3 = new Audio('Audio/zergling3.wav');
+
 var marineAudio = new Audio('Audio/marineAudio.wav');
 var marineAudio2 = new Audio('Audio/marine2.wav');
 var marineAudio3 = new Audio('Audio/marine3.wav');
 
+var siegetank1 = new Audio('Audio/siegetank1.wav');
+var siegetank2 = new Audio('Audio/siegetank2.wav');
+var siegetank3 = new Audio('Audio/siegetank3.wav');
+
 var zealotAudio = new Audio('Audio/zealotAudio.wav');
 var zealotAudio2 = new Audio('Audio/zealot2.wav');
 var zealotAudio3 = new Audio('Audio/zealot3.wav');
+
+var dragoon1 = new Audio('Audio/dragoon1.wav');
+var dragoon2 = new Audio('Audio/dragoon2.wav');
+var dragoon3 = new Audio('Audio/dragoon3.wav');
 
 var zergWinAudio = new Audio('Audio/zergWinAudio.wav');
 var protossWinAudio = new Audio('Audio/protossWinAudio.wav');
