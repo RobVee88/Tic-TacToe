@@ -19,7 +19,7 @@ Lessons learned:
 
     - It is very easy to get stuck because the code becomes very hard to read or is too inefficient. 
       Making any sort of changes or trying to finds a bug can get very hard this way. 
-      In the end I rewrote most of the code to make it more readable and more efficient. 
+      On the last day I rewrote most of the code to make it more readable and more efficient. 
       After that it was much easier to make any adjustments.
       
      
